@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "xxxxx"  # Contraseña segura para SA
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - mynetwork
+
+  webapp:
+    build:
+      context: .
+      dockerfile: FacturacionPru/Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=FacturacionDB;User=usuario;Password=xxxxxx;"
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
